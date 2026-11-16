@@ -1,0 +1,8 @@
+node_modules
+dist
+dist-playground
+release
+_archive
+.DS_Store
+test-results
+*.log

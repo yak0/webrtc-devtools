@@ -1,0 +1,138 @@
+:root {
+  --wrd-mono: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+}
+html,
+body,
+#app {
+  margin: 0;
+  height: 100%;
+  overflow: hidden;
+}
+body {
+  font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  font-size: 12px;
+}
+.mono {
+  font-family: var(--wrd-mono);
+  font-size: 11px;
+}
+.wrd-app {
+  display: flex;
+  height: 100%;
+}
+.wrd-main {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+}
+.wrd-scroll {
+  overflow: auto;
+  flex: 1;
+  min-height: 0;
+}
+.wrd-pad {
+  padding: 10px 12px;
+}
+.wrd-grid {
+  display: grid;
+  gap: 10px;
+}
+.wrd-grid.cols-2 {
+  grid-template-columns: repeat(auto-fit, minmax(min(380px, 100%), 1fr));
+}
+.wrd-grid.cols-3 {
+  grid-template-columns: repeat(auto-fit, minmax(min(280px, 100%), 1fr));
+}
+.wrd-grid.cols-4 {
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+}
+.wrd-section-title {
+  font-weight: 600;
+  font-size: 12px;
+  margin: 0 0 6px;
+  opacity: 0.85;
+}
+.wrd-muted {
+  opacity: 0.6;
+}
+.wrd-kv {
+  display: grid;
+  grid-template-columns: max-content 1fr;
+  gap: 2px 12px;
+  align-items: baseline;
+}
+.wrd-kv > .k {
+  opacity: 0.65;
+  white-space: nowrap;
+}
+.wrd-kv > .v {
+  font-family: var(--wrd-mono);
+  font-size: 11px;
+  word-break: break-all;
+}
+pre.wrd-pre {
+  margin: 0;
+  font-family: var(--wrd-mono);
+  font-size: 11px;
+  white-space: pre-wrap;
+  word-break: break-all;
+}
+.wrd-metric {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.wrd-metric .label {
+  font-size: 11px;
+  opacity: 0.6;
+}
+.wrd-metric .value {
+  font-size: 16px;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+.wrd-dot {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  flex: none;
+}
+.wrd-dot.success {
+  background: #18a058;
+}
+.wrd-dot.warning {
+  background: #f0a020;
+}
+.wrd-dot.error {
+  background: #d03050;
+}
+.wrd-dot.info {
+  background: #2080f0;
+}
+.wrd-dot.default {
+  background: #888;
+}
+.n-card > .n-card-header {
+  padding-top: 10px !important;
+  padding-bottom: 6px !important;
+}
+.uplot,
+.u-legend {
+  font-family: var(--wrd-mono);
+  font-size: 11px;
+}
+.u-legend .u-marker {
+  width: 10px;
+  height: 3px;
+}
+
+@media (max-width: 600px) {
+  .wrd-app {
+    flex-direction: column;
+  }
+  .wrd-pad {
+    padding: 8px;
+  }
+}

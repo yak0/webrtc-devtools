@@ -1,0 +1,37 @@
+{
+  "name": "webrtc-devtools",
+  "displayName": "WebRTC DevTools",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Inspect RTCPeerConnections, ICE, SDP, stats, data channels and getUserMedia right inside Chrome DevTools.",
+  "scripts": {
+    "dev": "node scripts/build.mjs --watch",
+    "build": "npm run type-check && node scripts/build.mjs",
+    "build:only": "node scripts/build.mjs",
+    "playground": "vite --config vite.playground.config.ts",
+    "type-check": "vue-tsc --noEmit -p tsconfig.json",
+    "test": "vitest run",
+    "test:e2e": "node scripts/build.mjs && node tests/e2e/run.mjs",
+    "zip": "node scripts/zip.mjs",
+    "icons": "node scripts/icons.mjs",
+    "store:assets": "node scripts/build.mjs && node scripts/store-assets.mjs"
+  },
+  "devDependencies": {
+    "@types/chrome": "^0.3.7",
+    "@types/node": "^26.6.6",
+    "@vicons/carbon": "^0.13.0",
+    "@vitejs/plugin-vue": "^6.0.11",
+    "esbuild": "^0.28.2",
+    "naive-ui": "^2.45.3",
+    "playwright": "1.65",
+    "typescript": "5.9",
+    "vite": "^8.3.8",
+    "vitest": "^4.1.12",
+    "vue-tsc": "^3.3.14"
+  },
+  "dependencies": {
+    "uplot": "^1.6.32",
+    "vue": "3.5"
+  }
+}

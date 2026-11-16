@@ -1,0 +1,78 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>Demo call</title>
+  </head>
+  <body>
+    <script>
+      // Demo call used only to produce store screenshots: two peers in one page,
+      // animated video, audio, a chat data channel and one unreachable TURN server
+      // (so the Overview shows a diagnosis).
+      (async () => {
+        const canvas = document.createElement('canvas');
+        canvas.width = 1280;
+        canvas.height = 720;
+        const ctx = canvas.getContext('2d');
+        let f = 0;
+        setInterval(() => {
+          f++;
+          const g = ctx.createLinearGradient(0, 0, 1280, 720);
+          g.addColorStop(0, `hsl(${(210 + f / 3) % 360} 70% 45%)`);
+          g.addColorStop(1, `hsl(${(150 + f / 2) % 360} 60% 35%)`);
+          ctx.fillStyle = g;
+          ctx.fillRect(0, 0, 1280, 720);
+          ctx.fillStyle = 'rgba(255,255,255,0.9)';
+          for (let i = 0; i < 6; i++) {
+            ctx.beginPath();
+            ctx.arc(640 + Math.cos(f / 30 + i) * 380, 360 + Math.sin(f / 22 + i * 2) * 220, 28 + i * 6, 0, Math.PI * 2);
+            ctx.fill();
+          }
+          ctx.font = '600 64px system-ui';
+          ctx.fillText('Demo call', 60, 110);
+        }, 33);
+        const stream = canvas.captureStream(30);
+        try {
+          const audio = new AudioContext();
+          const osc = audio.createOscillator();
+          const lfo = audio.createOscillator();
+          const lfoGain = audio.createGain();
+          const gain = audio.createGain();
+          osc.frequency.value = 330;
+          lfo.frequency.value = 0.7;
+          lfoGain.gain.value = 0.08;
+          gain.gain.value = 0.1;
+          lfo.connect(lfoGain).connect(gain.gain);
+          const dest = audio.createMediaStreamDestination();
+          osc.connect(gain).connect(dest);
+          osc.start();
+          lfo.start();
+          stream.addTrack(dest.stream.getAudioTracks()[0]);
+        } catch {}
+
+        const config = {
+          iceServers: [{ urls: 'stun:stun.l.google.com:19302' }, { urls: 'turn:turn.example.invalid:3478', username: 'demo', credential: 'demo' }]
+        };
+        const a = new RTCPeerConnection(config);
+        const b = new RTCPeerConnection(config);
+        a.onicecandidate = (e) => b.addIceCandidate(e.candidate).catch(() => {});
+        b.onicecandidate = (e) => a.addIceCandidate(e.candidate).catch(() => {});
+        for (const t of stream.getTracks()) {
+          if (t.kind === 'video') a.addTransceiver(t, { streams: [stream], sendEncodings: [{ scalabilityMode: 'L1T3', maxBitrate: 2500000 }] });
+          else a.addTrack(t, stream);
+        }
+        const chat = a.createDataChannel('chat');
+        b.ondatachannel = (e) => (e.channel.onmessage = (m) => e.channel.send(JSON.stringify({ type: 'ack', id: JSON.parse(m.data).id })));
+        const lines = ['hello 👋', 'can you hear me?', 'sharing my screen now', 'muting for a sec', 'back', 'looks good on my side'];
+        let id = 0;
+        chat.onopen = () => setInterval(() => chat.send(JSON.stringify({ type: 'chat', id: ++id, from: 'alice', text: lines[id % lines.length] })), 900);
+        await a.setLocalDescription(await a.createOffer());
+        await b.setRemoteDescription(a.localDescription);
+        await b.setLocalDescription(await b.createAnswer());
+        await a.setRemoteDescription(b.localDescription);
+        window.__pcs = [a, b];
+        window.__ready = true;
+      })();
+    </script>
+  </body>
+</html>

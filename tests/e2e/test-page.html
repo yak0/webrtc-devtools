@@ -1,0 +1,68 @@
+<!doctype html>
+<html>
+  <body>
+    <h1>e2e</h1>
+    <script>
+      // Runs as an ordinary app. Checks that the injected collector is invisible to it.
+      (async () => {
+        const r = (window.__results = { errors: [] });
+        // Pretend a LiveKit CDN build is loaded, to exercise SDK detection.
+        window.LivekitClient = { version: '2.0.0-e2e' };
+        try {
+          r.name = RTCPeerConnection.name;
+          r.nativeToString = Function.prototype.toString.call(RTCPeerConnection.prototype.createOffer).includes('[native code]');
+          r.hasGenerateCertificate = typeof RTCPeerConnection.generateCertificate === 'function';
+          class MyPC extends RTCPeerConnection {
+            hello() { return 'hi'; }
+          }
+          const sub = new MyPC();
+          r.subclassWorks = sub.hello() === 'hi' && sub instanceof RTCPeerConnection;
+          // TURN config only used to verify the panel masks credentials.
+          const withTurn = new RTCPeerConnection({ iceServers: [{ urls: 'turn:127.0.0.1:9', username: 'u', credential: 'topsecret' }] });
+          r.constructorIdentity = sub.constructor === MyPC && withTurn.constructor === RTCPeerConnection;
+
+          const a = new RTCPeerConnection();
+          const b = new RTCPeerConnection();
+          r.instanceOf = a instanceof RTCPeerConnection;
+          a.onicecandidate = (e) => b.addIceCandidate(e.candidate).catch(() => {});
+          b.onicecandidate = (e) => a.addIceCandidate(e.candidate).catch(() => {});
+          const canvas = document.createElement('canvas');
+          canvas.width = 320; canvas.height = 180;
+          const ctx = canvas.getContext('2d');
+          let f = 0;
+          setInterval(() => { ctx.fillStyle = `hsl(${f++ % 360} 50% 50%)`; ctx.fillRect(0, 0, 320, 180); }, 33);
+          const stream = canvas.captureStream(30);
+          a.addTrack(stream.getVideoTracks()[0], stream);
+          const dc = a.createDataChannel('chat');
+          b.ondatachannel = (e) => (e.channel.onmessage = (m) => e.channel.send('pong:' + m.data));
+          dc.onopen = () => setInterval(() => dc.send(JSON.stringify({ ping: Date.now() })), 300);
+          const offer = await a.createOffer();
+          await a.setLocalDescription(offer);
+          await b.setRemoteDescription(offer);
+          await b.setLocalDescription(await b.createAnswer());
+          await a.setRemoteDescription(b.localDescription);
+
+          // Errors must still reach the app unchanged.
+          try {
+            await b.setRemoteDescription({ type: 'answer', sdp: 'garbage' });
+            r.rejectionPropagates = false;
+          } catch (err) {
+            r.rejectionPropagates = err && typeof err.name === 'string';
+          }
+          try {
+            a.createDataChannel('x', { maxRetransmits: 1, maxPacketLifeTime: 1 });
+            r.syncThrowPropagates = false;
+          } catch (err) {
+            r.syncThrowPropagates = err instanceof TypeError;
+          }
+          const s = await navigator.mediaDevices.getUserMedia({ audio: true, video: true });
+          r.gumTracks = s.getTracks().length;
+          window.__pcs = [a, b, sub];
+          r.done = true;
+        } catch (err) {
+          r.errors.push(String(err && err.stack || err));
+        }
+      })();
+    </script>
+  </body>
+</html>
