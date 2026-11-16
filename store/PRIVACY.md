@@ -67,4 +67,5 @@ If this policy changes, the updated version will be published at this address wi
 
 ## Contact
 
-TODO: add a contact email address or a link to the project's issue tracker.
+Questions about this policy: yakup.cilesiz@gmail.com, or open an issue at
+https://github.com/yak0/webrtc-devtools/issues

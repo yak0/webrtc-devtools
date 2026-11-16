@@ -104,8 +104,8 @@ Works in Chrome and other Chromium browsers (Edge, Brave, Arc), version 111 or l
 **Additional fields**
 
 - Official URL: none (optional)
-- Homepage URL: **TODO** (repository or landing page; the old manifest used `https://github.com/yak0/webrtc-devtools`, confirm it is still right)
-- Support URL: **TODO** (for example the repository's issues page)
+- Homepage URL: `https://github.com/yak0/webrtc-devtools`
+- Support URL: `https://github.com/yak0/webrtc-devtools/issues`
 - Mature content: No
 
 ---
@@ -148,7 +148,7 @@ Tick all three certifications:
 - I do not use or transfer user data for purposes that are unrelated to my item's single purpose
 - I do not use or transfer user data to determine creditworthiness or for lending purposes
 
-**Privacy policy URL:** **TODO** host `PRIVACY.md` publicly (GitHub Pages, the repository itself, or your site) and paste the URL. Fill in the contact line in that file first.
+**Privacy policy URL:** `https://github.com/yak0/webrtc-devtools/blob/main/store/PRIVACY.md`
 
 ---
 
@@ -189,8 +189,7 @@ First public release: DevTools panel with diagnosis, timeline, SDP, ICE, media, 
 
 - [ ] Generate the icon (`ICON_PROMPT.md`), save as `store/icon-source.png`, run `npm run icons`
 - [ ] `npm run store:assets` again so the promo tiles use the new icon
-- [ ] Fill the contact line in `PRIVACY.md` and host it; paste the URL in the dashboard
-- [ ] Decide Homepage and Support URLs
+- [x] Privacy policy, Homepage and Support URLs (see sections 1 and 2)
 - [ ] Bump `version` in `package.json` if this is not the first upload
 - [ ] `npm run build && npm test && npm run test:e2e && npm run zip`
 - [ ] Load `dist/` unpacked in your everyday Chrome and try it on one of your real apps

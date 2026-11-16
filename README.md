@@ -1,6 +1,10 @@
 # WebRTC DevTools
 
+![WebRTC DevTools: everything webrtc-internals shows, per tab, plus the diagnosis](store/promo/marquee-1400x560.jpg)
+
 A Chrome DevTools panel for debugging WebRTC apps: everything `chrome://webrtc-internals` shows, scoped to the inspected tab, plus things it can't show.
+
+![Media tab: per-stream metrics, live preview and quality score](store/screenshots/2-media.jpg)
 
 - **Overview**: insights (ICE/TURN failures, relayed media, CPU/bandwidth limits, packet loss, unclosed connections…), traffic chart, state timelines, transport, configuration (TURN credentials masked)
 - **Timeline**: every API call and event with arguments, results, errors, duration and the **call stack** of the app code that made the call
